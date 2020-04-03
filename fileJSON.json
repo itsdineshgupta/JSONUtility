@@ -1,0 +1,31 @@
+{
+  "id": "1753_CORE1",
+  "name": "Gtx cuda Service:1753",
+  "shortName": "gt-service-1753",
+  "createdDate": "Mar 31, 2015 4:47:10 PM",
+  "config": {
+    "oauthSecret": [
+      {
+        "id": 45,
+        "config123": {
+          "oauthSecret": "P8n2x5Hsst0nFRRB0A",
+          "status": "CREATED"
+        },
+        "SERVER132": "1000"
+      },
+      {
+        "id": 46,
+        "config123": {
+          "oauthSecret": "P8n2x5Htss0nFRRB0A"
+        },
+        "SERVER132": "1000"
+      }
+    ],
+    "oauthKey": "154284-service-1753",
+    "SERVER": "1000"
+  },
+  "features": [
+    9004,
+    9005
+  ]
+}
