@@ -3,6 +3,8 @@ package com.json.utility;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,11 @@ import org.json.simple.parser.ParseException;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.spi.json.GsonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 
 public class jsonUtility {
 	private static List<String> keyValueList = new ArrayList<String>();
@@ -22,7 +29,10 @@ public class jsonUtility {
 
 		String filePath = "fileJSON.json";
 		String key = "id";
-		parseJson(filePath, key);
+
+		System.out.println(readJsonFileDynamic(filePath, "$.."+key));
+
+		//parseJson(filePath, key);
 	}
 
 	private static void parseJson(String filePath, String key) throws FileNotFoundException, IOException, ParseException {
@@ -39,7 +49,7 @@ public class jsonUtility {
 		//Print all the found values
 		for(String keyValue:keyValueList) {
 			System.out.println(keyValue.toString().replaceAll("\"", ""));
-			break;
+			//break;
 		}
 	}
 
@@ -49,11 +59,10 @@ public class jsonUtility {
 			for (JsonElement jsonElement1 : jsonElement.getAsJsonArray()) {
 				readKey(keyName, jsonElement1);
 			}
-		} 
+		}
 		else {
 			if (jsonElement.isJsonObject()) {
-				Set<Map.Entry<String, JsonElement>> entrySet = jsonElement
-						.getAsJsonObject().entrySet();
+				Set<Map.Entry<String, JsonElement>> entrySet = jsonElement.getAsJsonObject().entrySet();
 				for (Map.Entry<String, JsonElement> entry : entrySet) {
 					String key1 = entry.getKey();
 					if (key1.equals(keyName)) {
@@ -67,5 +76,27 @@ public class jsonUtility {
 				}
 			}
 		}
+	}
+
+	public static List<?> readJsonFileDynamic(String filePath, String jsonPath) {
+
+		System.out.println("jsonpath - "+jsonPath);
+		List<?> categories = null;
+		try
+		{
+			String content = new String(Files.readAllBytes(Paths.get(filePath)));
+			Configuration conf = Configuration.builder()
+					.jsonProvider(new GsonJsonProvider())
+					.mappingProvider(new GsonMappingProvider())
+					.build();
+
+			DocumentContext context = JsonPath.using(conf).parse(content);
+			categories = context.read(jsonPath, List.class);//List 
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return categories;
 	}
 }
